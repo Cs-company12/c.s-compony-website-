@@ -2,83 +2,96 @@
 <html lang="so">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>C.S Company – Dalabka System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>C.S Company - Order Form</title>
   <style>
-    body {font-family: Arial, sans-serif; background:#f9fbfe; color:#222; margin:0; padding:0;}
-    header {background:#0b6fb5; color:white; padding:12px 20px; font-size:20px; font-weight:bold;}
-    main {padding:20px; max-width:600px; margin:auto; background:white; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.05);}
-    label {display:block; margin-top:10px; font-weight:bold;}
-    input, select, textarea {width:100%; padding:10px; margin-top:4px; border:1px solid #cdd9ed; border-radius:6px;}
-    button {background:#0b6fb5; color:white; border:none; padding:10px 16px; border-radius:6px; cursor:pointer; margin-top:12px;}
-    .price-box {background:#eef6ff; padding:10px; border-radius:6px; margin-top:10px;}
-    footer {text-align:center; padding:12px; color:#666;}
+    body { font-family: Inter, Arial, sans-serif; background: #f6f9fc; padding:20px;}
+    .box{max-width:600px;margin:auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 5px 20px rgba(0,0,0,0.05);}
+    h2{margin-top:0;color:#0b4f8b;}
+    input, select, textarea{width:100%;padding:10px;margin:6px 0;border-radius:6px;border:1px solid #e6eef8;box-sizing:border-box;}
+    textarea{min-height:100px;resize:vertical;}
+    button{padding:10px 16px;background:#0b4f8b;color:#fff;border:none;border-radius:6px;cursor:pointer;margin-top:8px;}
+    .btn.ghost{background:#6b7280;}
+    .muted{color:#6b7280;font-size:13px;margin-top:6px;}
   </style>
 </head>
 <body>
-  <header>C.S Company – System Order</header>
-  <main>
-    <h3>Dalbo System</h3>
-    <label>Magaca</label>
-    <input id="name" placeholder="Magacaaga">
+<div class="box">
+  <h2>Buuxi Order-kaaga</h2>
+  <div class="muted">Fadlan buuxi xogta hoose.</div>
 
-    <label>Telefoon</label>
-    <input id="phone" placeholder="610XXXXXXX">
+  <input type="text" id="o_name" placeholder="Magac">
+  <input type="tel" id="o_phone" placeholder="Phone">
+  <input type="text" id="o_region" placeholder="Region">
+  <input type="text" id="o_product" placeholder="Product">
+  <select id="o_payment">
+    <option value="">Payment Method</option>
+    <option value="Cash">Cash</option>
+    <option value="EVC">EVC</option>
+    <option value="Zaad">Zaad</option>
+    <option value="Bank">Bank</option>
+  </select>
+  <input type="text" id="o_price" placeholder="Price">
 
-    <label>System</label>
-    <select id="product">
-      <option value="">-- Dooro --</option>
-      <option value="Hospital">Hospital System</option>
-      <option value="Pharmacy">Pharmacy System</option>
-    </select>
+  <button id="submitOrder">Submit Order</button>
+  <button id="clearForm" class="btn ghost">Clear</button>
+  <div id="status" class="muted"></div>
 
-    <label>Lacagta (USD)</label>
-    <input id="amount" placeholder="Tusaale: 250">
+  <h3 style="margin-top:20px;">Fariin / Xiriir</h3>
+  <div class="muted">Haddii aad rabto inaad fariin noo soo dirto, buuxi hoos.</div>
+  <input id="c_name" type="text" placeholder="Magac">
+  <input id="c_phone" type="tel" placeholder="Phone (optional)">
+  <textarea id="c_message" placeholder="Fariintaada..."></textarea>
+  <button id="sendMsgBtn">Send Message</button>
+  <button id="clearMsgBtn" class="btn ghost">Clear</button>
+</div>
 
-    <label>Faahfaahin (optional)</label>
-    <textarea id="note"></textarea>
+<script>
+(function(){
+  const o_name = document.getElementById('o_name');
+  const o_phone = document.getElementById('o_phone');
+  const o_region = document.getElementById('o_region');
+  const o_product = document.getElementById('o_product');
+  const o_payment = document.getElementById('o_payment');
+  const o_price = document.getElementById('o_price');
+  const submitOrder = document.getElementById('submitOrder');
+  const clearForm = document.getElementById('clearForm');
+  const status = document.getElementById('status');
 
-    <button onclick="submitOrder()">Dalbo</button>
+  const c_name = document.getElementById('c_name');
+  const c_phone = document.getElementById('c_phone');
+  const c_message = document.getElementById('c_message');
+  const sendMsgBtn = document.getElementById('sendMsgBtn');
+  const clearMsgBtn = document.getElementById('clearMsgBtn');
 
-    <div id="profile" class="price-box" style="display:none;">
-      <h4>Dalabkaaga waa la diiwaangeliyey ✅</h4>
-      <p><b>Magac:</b> <span id="pname"></span></p>
-      <p><b>System:</b> <span id="pproduct"></span></p>
-      <p><b>Qiime:</b> $<span id="pamount"></span></p>
-      <p><b>PIN:</b> <span id="ppin"></span></p>
-      <p><b>USSD:</b> <code id="pussd"></code></p>
-      <button onclick="notifyAdmin()">Dir WhatsApp</button>
-    </div>
-  </main>
-  <footer>© C.S Company • WhatsApp: +252 610 848 799</footer>
+  function saveOrder(){
+    const name=o_name.value.trim(), phone=o_phone.value.trim(), region=o_region.value.trim();
+    const product=o_product.value.trim(), payment=o_payment.value, price=o_price.value.trim();
+    if(!name||!phone||!region||!product||!payment||!price){ status.textContent="Fadlan buuxi dhammaan fields-ka"; return; }
+    const orders = JSON.parse(localStorage.getItem('cs_orders')||'[]');
+    const id='ORD'+Math.floor(Math.random()*90000+10000);
+    orders.push({id,name,phone,region,product,payment,price,time:Date.now()});
+    localStorage.setItem('cs_orders',JSON.stringify(orders));
+    status.textContent="Order la dhajiyey ID: " + id;
+    clearInputs();
+  }
+  function clearInputs(){ o_name.value=''; o_phone.value=''; o_region.value=''; o_product.value=''; o_payment.value=''; o_price.value=''; }
 
-  <script>
-    function uid(len=4){const s='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let r='';for(let i=0;i<len;i++)r+=s[Math.floor(Math.random()*s.length)];return r;}
-    function submitOrder(){
-      const n=document.getElementById('name').value.trim();
-      const ph=document.getElementById('phone').value.trim();
-      const pr=document.getElementById('product').value;
-      const a=document.getElementById('amount').value.trim();
-      const note=document.getElementById('note').value.trim();
-      if(!n||!ph||!pr||!a){alert('Fadlan buuxi dhammaan meelaha muhiimka ah');return;}
-      const pin=uid(4);
-      const ussd=`*712*610848799*${a}*${pin}#`;
-      const order={id:Date.now(),name:n,phone:ph,product:pr,amount:a,note:note,pin:pin,status:'Pending'};
-      const orders=JSON.parse(localStorage.getItem('cs_orders')||'[]');orders.push(order);
-      localStorage.setItem('cs_orders',JSON.stringify(orders));
-      document.getElementById('profile').style.display='block';
-      document.getElementById('pname').innerText=n;
-      document.getElementById('pproduct').innerText=pr;
-      document.getElementById('pamount').innerText=a;
-      document.getElementById('ppin').innerText=pin;
-      document.getElementById('pussd').innerText=ussd;
-      const msg=encodeURIComponent(`Dalab Cusub\nMagac: ${n}\nPhone: ${ph}\nSystem: ${pr}\nAmount: $${a}\nPIN: ${pin}\nUSSD: ${ussd}`);
-      window.open('https://wa.me/252610848799?text='+msg,'_blank');
-    }
-    function notifyAdmin(){
-      const msg=encodeURIComponent('Waxaan bixiyay lacagta, fadlan xaqiiji dalabkayga.');
-      window.open('https://wa.me/252610848799?text='+msg,'_blank');
-    }
-  </script>
+  submitOrder.addEventListener('click', saveOrder);
+  clearForm.addEventListener('click', clearInputs);
+
+  sendMsgBtn.addEventListener('click', ()=>{
+    const name=(c_name.value||'').trim(), phone=(c_phone.value||'').trim(), msg=(c_message.value||'').trim();
+    if(!name||!msg){ alert('Fadlan buuxi Magac iyo Fariin'); return; }
+    const messages = JSON.parse(localStorage.getItem('cs_messages')||'[]');
+    const id='MSG'+Math.floor(Math.random()*900000+100000);
+    messages.push({id,name,phone,message:msg,time:Date.now()});
+    localStorage.setItem('cs_messages',JSON.stringify(messages));
+    alert('Fariinta waa la diiwaangeliyey!');
+    c_name.value=''; c_phone.value=''; c_message.value='';
+  });
+  clearMsgBtn.addEventListener('click', ()=>{ c_name.value=''; c_phone.value=''; c_message.value=''; });
+})();
+</script>
 </body>
 </html>

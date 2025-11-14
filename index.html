@@ -1,97 +1,68 @@
+<!-- Save as public/index.html -->
 <!doctype html>
-<html lang="so">
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>C.S Company - Order Form</title>
-  <style>
-    body { font-family: Inter, Arial, sans-serif; background: #f6f9fc; padding:20px;}
-    .box{max-width:600px;margin:auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 5px 20px rgba(0,0,0,0.05);}
-    h2{margin-top:0;color:#0b4f8b;}
-    input, select, textarea{width:100%;padding:10px;margin:6px 0;border-radius:6px;border:1px solid #e6eef8;box-sizing:border-box;}
-    textarea{min-height:100px;resize:vertical;}
-    button{padding:10px 16px;background:#0b4f8b;color:#fff;border:none;border-radius:6px;cursor:pointer;margin-top:8px;}
-    .btn.ghost{background:#6b7280;}
-    .muted{color:#6b7280;font-size:13px;margin-top:6px;}
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>C.S Company</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="box">
-  <h2>Buuxi Order-kaaga</h2>
-  <div class="muted">Fadlan buuxi xogta hoose.</div>
+  <div class="container">
+    <header class="header">
+      <div class="brand">
+        <div class="logo">C.S</div>
+        <div>
+          <h1 class="site-title">C.S Company</h1>
+          <div class="muted">Bring technology to life</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="#systems">Systems</a>
+        <a href="#news">News</a>
+        <a href="#videos">Videos</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
 
-  <input type="text" id="o_name" placeholder="Magac">
-  <input type="tel" id="o_phone" placeholder="Phone">
-  <input type="text" id="o_region" placeholder="Region">
-  <input type="text" id="o_product" placeholder="Product">
-  <select id="o_payment">
-    <option value="">Payment Method</option>
-    <option value="Cash">Cash</option>
-    <option value="EVC">EVC</option>
-    <option value="Zaad">Zaad</option>
-    <option value="Bank">Bank</option>
-  </select>
-  <input type="text" id="o_price" placeholder="Price">
+    <main>
+      <section class="hero card">
+        <div class="hero-left">
+          <h2 class="h1">Soo Sarida Systems — Kushaqey System</h2>
+          <p class="lead">C.S Company provides professional software solutions for hospitals, pharmacies and supermarkets. Contact us for a demo.</p>
+        </div>
+      </section>
 
-  <button id="submitOrder">Submit Order</button>
-  <button id="clearForm" class="btn ghost">Clear</button>
-  <div id="status" class="muted"></div>
+      <section id="systems" class="section">
+        <h3>Our Systems</h3>
+        <div id="systemsGrid" class="grid"></div>
+      </section>
 
-  <h3 style="margin-top:20px;">Fariin / Xiriir</h3>
-  <div class="muted">Haddii aad rabto inaad fariin noo soo dirto, buuxi hoos.</div>
-  <input id="c_name" type="text" placeholder="Magac">
-  <input id="c_phone" type="tel" placeholder="Phone (optional)">
-  <textarea id="c_message" placeholder="Fariintaada..."></textarea>
-  <button id="sendMsgBtn">Send Message</button>
-  <button id="clearMsgBtn" class="btn ghost">Clear</button>
-</div>
+      <section id="news" class="section">
+        <h3>Latest News</h3>
+        <div id="newsList" class="grid"></div>
+      </section>
 
-<script>
-(function(){
-  const o_name = document.getElementById('o_name');
-  const o_phone = document.getElementById('o_phone');
-  const o_region = document.getElementById('o_region');
-  const o_product = document.getElementById('o_product');
-  const o_payment = document.getElementById('o_payment');
-  const o_price = document.getElementById('o_price');
-  const submitOrder = document.getElementById('submitOrder');
-  const clearForm = document.getElementById('clearForm');
-  const status = document.getElementById('status');
+      <section id="videos" class="section">
+        <h3>Videos</h3>
+        <div id="videosGrid" class="grid"></div>
+      </section>
 
-  const c_name = document.getElementById('c_name');
-  const c_phone = document.getElementById('c_phone');
-  const c_message = document.getElementById('c_message');
-  const sendMsgBtn = document.getElementById('sendMsgBtn');
-  const clearMsgBtn = document.getElementById('clearMsgBtn');
+      <section id="about" class="section card">
+        <h3>About</h3>
+        <p id="aboutText"></p>
+      </section>
 
-  function saveOrder(){
-    const name=o_name.value.trim(), phone=o_phone.value.trim(), region=o_region.value.trim();
-    const product=o_product.value.trim(), payment=o_payment.value, price=o_price.value.trim();
-    if(!name||!phone||!region||!product||!payment||!price){ status.textContent="Fadlan buuxi dhammaan fields-ka"; return; }
-    const orders = JSON.parse(localStorage.getItem('cs_orders')||'[]');
-    const id='ORD'+Math.floor(Math.random()*90000+10000);
-    orders.push({id,name,phone,region,product,payment,price,time:Date.now()});
-    localStorage.setItem('cs_orders',JSON.stringify(orders));
-    status.textContent="Order la dhajiyey ID: " + id;
-    clearInputs();
-  }
-  function clearInputs(){ o_name.value=''; o_phone.value=''; o_region.value=''; o_product.value=''; o_payment.value=''; o_price.value=''; }
+      <section id="contact" class="section card">
+        <h3>Contact</h3>
+        <p id="contactInfo"></p>
+      </section>
+    </main>
 
-  submitOrder.addEventListener('click', saveOrder);
-  clearForm.addEventListener('click', clearInputs);
+    <footer class="footer">© C.S Company</footer>
+  </div>
 
-  sendMsgBtn.addEventListener('click', ()=>{
-    const name=(c_name.value||'').trim(), phone=(c_phone.value||'').trim(), msg=(c_message.value||'').trim();
-    if(!name||!msg){ alert('Fadlan buuxi Magac iyo Fariin'); return; }
-    const messages = JSON.parse(localStorage.getItem('cs_messages')||'[]');
-    const id='MSG'+Math.floor(Math.random()*900000+100000);
-    messages.push({id,name,phone,message:msg,time:Date.now()});
-    localStorage.setItem('cs_messages',JSON.stringify(messages));
-    alert('Fariinta waa la diiwaangeliyey!');
-    c_name.value=''; c_phone.value=''; c_message.value='';
-  });
-  clearMsgBtn.addEventListener('click', ()=>{ c_name.value=''; c_phone.value=''; c_message.value=''; });
-})();
-</script>
+  <script src="app.js"></script>
 </body>
 </html>
